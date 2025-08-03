@@ -1,0 +1,11 @@
+diff --git a/src/ko/wolfdotcom/src/main/kotlin/eu/kanade/tachiyomi/extension/ko/wolfdotcom/Wolf.kt b/src/ko/wolfdotcom/src/main/kotlin/eu/kanade/tachiyomi/extension/ko/wolfdotcom/Wolf.kt
+index e82318c..XXXXXXX 100644
+--- a/src/ko/wolfdotcom/src/main/kotlin/eu/kanade/tachiyomi/extension/ko/wolfdotcom/Wolf.kt
++++ b/src/ko/wolfdotcom/src/main/kotlin/eu/kanade/tachiyomi/extension/ko/wolfdotcom/Wolf.kt
+@@ -165,7 +165,12 @@ private fun domainNumberInterceptor(chain: Interceptor.Chain): Response {
+     if (url.contains(domainRegex)) {
+-        val document = Jsoup.parse(response.peekBody(Long.MAX_VALUE).string())
++        // force EUC-KR → UTF-8 decoding
++        val peekBytes = response.peekBody(Long.MAX_VALUE).bytes()
++        val peekHtml = String(peekBytes, java.nio.charset.Charset.forName("EUC-KR"))
++        val document = Jsoup.parse(peekHtml)
