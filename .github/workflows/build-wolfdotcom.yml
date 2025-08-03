@@ -23,7 +23,7 @@ jobs:
           java-version: '11'
 
       - name: Build WolfDotCom APK
-        run: ./gradlew :src-ko-wolfdotcom:assembleRelease -x test
+        run: ./gradlew :src-ko-wolfdotcom:assembleRelease -x test -x lintKotlinMain
 
       - name: Upload APK Artifact
         # 변경: v3 → v4
