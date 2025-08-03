@@ -155,7 +155,9 @@ open class Wolf(
     }
 
     private fun parseBrowsePage(response: Response) {
-        val document = response.asJsoup()
+       val bytes    = response.body!!.bytes()
+       val html     = bytes.toString(Charsets.UTF_8)
+       val document = Jsoup.parse(html)
 
         parseSearchFilters(document)
 
@@ -197,7 +199,9 @@ open class Wolf(
         return client.newCall(GET(searchUrl, headers))
             .asObservableSuccess()
             .map { response ->
-                val document = Jsoup.parseBodyFragment(response.body.string(), searchUrl)
+                val bytes    = response.body!!.bytes()
+                val html     = bytes.toString(Charsets.UTF_8)
+                val document = Jsoup.parseBodyFragment(html, searchUrl)
                 val entries = document.select("article.searchItem")
                     .filter { el ->
                         el.selectFirst("a.searchLink")!!.attr("href").contains(entryPath)
@@ -232,7 +236,9 @@ open class Wolf(
     }
 
     override fun mangaDetailsParse(response: Response): SManga {
-        val document = response.asJsoup()
+        val bytes    = response.body!!.bytes()
+        val html     = bytes.toString(Charsets.UTF_8)
+        val document = Jsoup.parse(html)
 
         return SManga.create().apply {
             title = document.selectFirst(".text-box h1")!!.text()
@@ -254,7 +260,9 @@ open class Wolf(
     )
 
     override fun chapterListParse(response: Response): List<SChapter> {
-        val document = response.asJsoup()
+        val bytes    = response.body!!.bytes()
+        val html     = bytes.toString(Charsets.UTF_8)
+        val document = Jsoup.parse(html)
 
         return document.select(".webtoon-bbs-list a.view_open").map { el ->
             val chapUrl = el.absUrl("href").toHttpUrl()
@@ -286,7 +294,9 @@ open class Wolf(
     }
 
     override fun pageListParse(response: Response): List<Page> {
-        val document = response.asJsoup()
+        val bytes    = response.body!!.bytes()
+        val html     = bytes.toString(Charsets.UTF_8)
+        val document = Jsoup.parse(html)
 
         return document.select(".image-view img").mapIndexed { idx, img ->
             Page(idx, imageUrl = img.absUrl("data-original"))
@@ -347,7 +357,9 @@ open class Wolf(
         val url = request.url.toString()
 
         if (url.contains(domainRegex)) {
-            val document = Jsoup.parse(response.peekBody(Long.MAX_VALUE).string())
+            val bytes    = response.body!!.bytes()
+            val html     = bytes.toString(Charsets.UTF_8)
+            val document = Jsoup.parseBodyFragment(html, searchUrl)
             val newUrl = document.selectFirst("""#pop-content a[href~=^https?://wfwf\d+\.com]""")
                 ?: return response
 
