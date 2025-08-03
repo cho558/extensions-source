@@ -21,7 +21,9 @@ jobs:
 
 
       - name: Build WolfDotCom APK
-        run: ./gradlew :src-ko-wolfdotcom:assembleRelease -x test -x lintKotlinMain
+        run: |
+           # src/ko/wolfdotcom 모듈을 프로젝트로 지정하고 Release APK 빌드
+           ./gradlew -p src/ko/wolfdotcom assembleRelease -x test -x lintKotlinMain
 
       - name: Upload APK Artifact
         # 변경: v3 → v4
